@@ -7,7 +7,7 @@ import AppLinks from 'src/layouts/full/vertical/header/AppLinks';
 import QuickLinks from 'src/layouts/full/vertical/header/QuickLinks';
 
 const MobileSidebar = () => {
-    const [toggle, setToggle] = useState(false)
+
     const [toggle2, setToggle2] = useState(false)
 
     return (

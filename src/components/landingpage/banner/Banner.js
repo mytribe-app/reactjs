@@ -1,36 +1,11 @@
 import React from 'react';
-import { Grid, Box, Container, useMediaQuery, styled, Stack } from '@mui/material';
+import { Grid, Box, Container } from '@mui/material';
 import BannerContent from './BannerContent';
 
 
 const Banner = () => {
-  const lgUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
 
-  const SliderBox = styled(Box)(() => ({
-    '@keyframes slideup': {
-      '0%': {
-        transform: 'translate3d(0, 0, 0)',
-      },
-      '100% ': {
-        transform: 'translate3d(0px, -100%, 0px)',
-      },
-    },
 
-    animation: 'slideup 35s linear infinite',
-  }));
-
-  const SliderBox2 = styled(Box)(() => ({
-    '@keyframes slideDown': {
-      '0%': {
-        transform: 'translate3d(0, -100%, 0)',
-      },
-      '100% ': {
-        transform: 'translate3d(0px, 0, 0px)',
-      },
-    },
-
-    animation: 'slideDown 35s linear infinite',
-  }));
   return (
     <Box mb={10} sx={{ overflow: 'hidden' }}>
       <Container maxWidth="lg">

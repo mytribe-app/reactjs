@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Box, Avatar, Typography, IconButton, Tooltip, useMediaQuery } from '@mui/material';
 import { useSelector } from 'react-redux';
-import img1 from 'src/assets/images/profile/user-1.jpg';
 import { IconPower } from '@tabler/icons';
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from 'src/context/AuthContext';
 import { getUserById } from 'src/services/api';
 

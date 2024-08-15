@@ -10,8 +10,6 @@ import {
   Avatar,
   Card,
   CardContent,
-  CardActions,
-  Button,
   Divider,
 } from '@mui/material';
 import { getUsers } from 'src/services/api';

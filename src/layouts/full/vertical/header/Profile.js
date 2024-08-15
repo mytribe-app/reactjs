@@ -1,13 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Box, Menu, Avatar, Typography, Divider, Button, IconButton } from '@mui/material';
-import * as dropdownData from './data';
+
 
 import { IconMail } from '@tabler/icons';
 import { Stack } from '@mui/system';
 
 import ProfileImg from 'src/assets/images/profile/user-1.jpg';
-import unlimitedImg from 'src/assets/images/backgrounds/unlimited-bg.png';
 import Scrollbar from 'src/components/custom-scroll/Scrollbar';
 import { AuthContext } from 'src/context/AuthContext';
 import { getUserById } from 'src/services/api';
