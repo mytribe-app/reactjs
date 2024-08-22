@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Menu, Avatar, Typography, Divider, Button, IconButton } from '@mui/material';
 
-
 import { IconMail } from '@tabler/icons';
 import { Stack } from '@mui/system';
 
@@ -32,11 +31,9 @@ const Profile = () => {
       }
 
       try {
-
         const sessionUser = await getUserById(id, token);
-        setSessionUser(sessionUser?.data)
-        console.log(sessionUser?.data)
-
+        setSessionUser(sessionUser?.data);
+        console.log(sessionUser?.data);
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -46,11 +43,10 @@ const Profile = () => {
   }, [token]);
 
   const handleLogout = () => {
-
     logout();
     localStorage.removeItem('authToken');
-    navigate('/auth/login')
-  }
+    navigate('/auth/login');
+  };
   return (
     <Box>
       <IconButton
@@ -94,7 +90,10 @@ const Profile = () => {
           <Box p={3}>
             <Typography variant="h5">User Profile</Typography>
             <Stack direction="row" py={3} spacing={2} alignItems="center">
-              <Avatar src={`data:image/jpeg;base64,${sessionUser?.profile}`} sx={{ width: 95, height: 95 }} />
+              <Avatar
+                src={`data:image/jpeg;base64,${sessionUser?.profile}`}
+                sx={{ width: 95, height: 95 }}
+              />
               <Box>
                 <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
                   {sessionUser?.first_name} {sessionUser?.last_name}
@@ -117,12 +116,7 @@ const Profile = () => {
             <Divider />
 
             <Box mt={2}>
-              <Button
-                variant="outlined"
-                color="primary"
-                fullWidth
-                onClick={handleLogout}
-              >
+              <Button variant="outlined" color="primary" fullWidth onClick={handleLogout}>
                 Logout
               </Button>
             </Box>

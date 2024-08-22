@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
     useEffect(() => {
         const token = localStorage.getItem('authToken');
-        console.log("token one", token)
+        console.log('token one', token);
         if (token) {
             try {
                 const decodedToken = jwtDecode(token);
@@ -22,23 +22,22 @@ export const AuthProvider = ({ children }) => {
                     logout();
                 } else {
                     setUser(decodedToken);
-                    setToken(token)
+                    setToken(token);
                     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 }
-
             } catch (error) {
                 console.error('Error decoding token:', error);
                 logout();
             }
         }
         setLoading(false);
-    }, []);
+    }, [token]);
 
     const login = async (email, password) => {
         try {
             const data = await loginApi(email, password);
             const token = data?.data?.token;
-            setData(data)
+            setData(data);
             localStorage.setItem('authToken', data?.data?.token);
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             navigate('/apps/chats');
@@ -47,8 +46,6 @@ export const AuthProvider = ({ children }) => {
             throw error;
         }
     };
-
-
 
     const logout = () => {
         localStorage.removeItem('authToken');
@@ -62,4 +59,3 @@ export const AuthProvider = ({ children }) => {
         </AuthContext.Provider>
     );
 };
-

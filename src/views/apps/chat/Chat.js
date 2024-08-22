@@ -56,11 +56,11 @@ const ChatPage = () => {
   };
 
   const handleReasonSubmit = async () => {
-    if (!reason.trim()) return;
+    if (!reason.trim() || !selectedUser) return;
 
     const contactData = {
       user_id: sessionUserId,
-      contact_user_id: selectedUser ? selectedUser._id : null,
+      contact_user_id: selectedUser._id,
       reason,
     };
 
@@ -75,19 +75,28 @@ const ChatPage = () => {
 
   return (
     <Card sx={{ height: '80vh', display: 'flex', flexDirection: 'column' }}>
-      <CardContent sx={{ flex: '0 0 auto', display: 'flex', alignItems: 'center', borderBottom: '1px solid #ccc' }}>
+      <CardContent
+        sx={{
+          flex: '0 0 auto',
+          display: 'flex',
+          alignItems: 'center',
+          borderBottom: '1px solid #ccc',
+        }}
+      >
         <Grid container spacing={2}>
           <Grid item xs={6} sm={4} md={3}>
             <Box display="flex" alignItems="center">
-              <Avatar alt={`${sessionUser?.first_name} ${sessionUser?.last_name}`}
-                // src={`data:image/jpeg;base64,${sessionUser?.profile}`} 
-                sx={{ mr: 2 }} />
+              <Avatar
+                alt={`${sessionUser?.first_name || ''} ${sessionUser?.last_name || ''}`}
+                // src={`data:image/jpeg;base64,${sessionUser?.profile}`}
+                sx={{ mr: 2 }}
+              />
               <Box>
                 <Typography variant="h6">
-                  {sessionUser?.first_name} {sessionUser?.last_name}
+                  {sessionUser?.first_name || ''} {sessionUser?.last_name || ''}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                  {sessionUser?.position}
+                  {sessionUser?.position || ''}
                 </Typography>
               </Box>
             </Box>
@@ -95,15 +104,17 @@ const ChatPage = () => {
           <Grid item xs={6} sm={8} md={9}>
             {selectedUser && (
               <Box display="flex" alignItems="center">
-                <Avatar alt={`${selectedUser.first_name} ${selectedUser.last_name}`}
-                  // src={`data:image/jpeg;base64,${selectedUser.profile}`} 
-                  sx={{ mr: 2 }} />
+                <Avatar
+                  alt={`${selectedUser?.first_name || ''} ${selectedUser?.last_name || ''}`}
+                  // src={`data:image/jpeg;base64,${selectedUser?.profile}`}
+                  sx={{ mr: 2 }}
+                />
                 <Box>
                   <Typography variant="h6">
-                    {selectedUser.first_name} {selectedUser.last_name}
+                    {selectedUser?.first_name || ''} {selectedUser?.last_name || ''}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
-                    {selectedUser.position}
+                    {selectedUser?.position || ''}
                   </Typography>
                 </Box>
               </Box>
@@ -118,17 +129,29 @@ const ChatPage = () => {
             {usersData.map((user) => (
               <ListItem button key={user._id} onClick={() => handleUserSelect(user)}>
                 <ListItemAvatar>
-                  <Avatar alt={`${user.first_name} ${user.last_name}`}
-                  // src={`data:image/jpeg;base64,${user.profile}`} 
+                  <Avatar
+                    alt={`${user.first_name} ${user.last_name}`}
+                    // src={`data:image/jpeg;base64,${user.profile}`}
                   />
                 </ListItemAvatar>
-                <ListItemText primary={`${user.first_name} ${user.last_name}`} secondary={user.position} />
+                <ListItemText
+                  primary={`${user.first_name} ${user.last_name}`}
+                  secondary={user.position}
+                />
               </ListItem>
             ))}
           </List>
         </Box>
 
-        <Box sx={{ flex: 1, p: 3, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <Box
+          sx={{
+            flex: 1,
+            p: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
           <Box sx={{ flexGrow: 1, overflowY: 'auto', mb: 2 }}>
             <Typography variant="h6">All Messages</Typography>
             <Divider sx={{ my: 2 }} />
@@ -138,8 +161,9 @@ const ChatPage = () => {
                 mb={2}
                 sx={{
                   display: 'flex',
-                  justifyContent: reasonItem.user_id._id === sessionUserId ? 'flex-end' : 'flex-start',
-                  alignItems: 'center'
+                  justifyContent:
+                    reasonItem.user_id?._id === sessionUserId ? 'flex-end' : 'flex-start',
+                  alignItems: 'center',
                 }}
               >
                 <Box
@@ -147,12 +171,19 @@ const ChatPage = () => {
                     maxWidth: '60%',
                     padding: '8px 12px',
                     borderRadius: '8px',
-                    backgroundColor: reasonItem.user_id._id === sessionUserId ? '#DCF8C6' : '#F1F0F0',
-                    textAlign: reasonItem.user_id._id === sessionUserId ? 'right' : 'left'
+                    backgroundColor:
+                      reasonItem.user_id?._id === sessionUserId ? '#DCF8C6' : '#F1F0F0',
+                    textAlign: reasonItem.user_id?._id === sessionUserId ? 'right' : 'left',
                   }}
                 >
                   <Typography variant="body2" color="textSecondary">
-                    <strong>{reasonItem.user_id._id === sessionUserId ? 'You' : `${reasonItem.user_id.first_name} ${reasonItem.user_id.last_name}`}:</strong> {reasonItem.reason}
+                    <strong>
+                      {reasonItem.user_id?._id === sessionUserId
+                        ? 'You'
+                        : `${reasonItem.user_id?.first_name || ''} ${reasonItem.user_id?.last_name || ''}`}
+                      :
+                    </strong>{' '}
+                    {reasonItem.reason}
                   </Typography>
                 </Box>
               </Box>

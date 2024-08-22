@@ -1,5 +1,15 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Container, Box, Button, Typography, Avatar, Card, CardContent, TextField, Divider } from '@mui/material';
+import {
+    Container,
+    Box,
+    Button,
+    Typography,
+    Avatar,
+    Card,
+    CardContent,
+    TextField,
+    Divider,
+} from '@mui/material';
 import { getAllPosts, createPost, createComment, getCommentsByPostId } from 'src/services/api';
 import { AuthContext } from 'src/context/AuthContext';
 
@@ -43,8 +53,7 @@ const FeedPage = () => {
     };
 
     const handleSelectPost = async (postId) => {
-        // Find the post with the matching ID
-        const matchedPost = posts.find(post => post._id === postId);
+        const matchedPost = posts.find((post) => post._id === postId);
         if (matchedPost) {
             setSelectedPost(matchedPost);
             try {
@@ -63,7 +72,7 @@ const FeedPage = () => {
             const commentData = {
                 post_id: selectedPost._id,
                 content: newComment,
-                user_id: user.user.id
+                user_id: user.user.id,
             };
             await createComment(commentData, token);
             setNewComment('');
@@ -112,19 +121,34 @@ const FeedPage = () => {
                 <Card sx={{ mb: 3 }}>
                     <CardContent>
                         <Box display="flex" alignItems="center" mb={2}>
-                            <Avatar alt={`${selectedPost.user_id?.first_name || ''} ${selectedPost.user_id?.last_name || ''}`} />
+                            <Avatar
+                                alt={`${selectedPost.user_id?.first_name || ''} ${selectedPost.user_id?.last_name || ''}`}
+                            />
                             <Box ml={2}>
-                                <Typography variant="h6">{selectedPost.user_id?.first_name || ''} {selectedPost.user_id?.last_name || ''}</Typography>
-                                <Typography variant="body2" color="textSecondary">{selectedPost.user_id?.position || ''}</Typography>
+                                <Typography variant="h6">
+                                    {selectedPost.user_id?.first_name || ''}{' '}
+                                    {selectedPost.user_id?.last_name || ''}
+                                </Typography>
+                                <Typography variant="body2" color="textSecondary">
+                                    {selectedPost.user_id?.position || ''}
+                                </Typography>
                             </Box>
                         </Box>
                         <Typography variant="h5">{selectedPost.title}</Typography>
-                        <Typography variant="body1" sx={{ mt: 2 }}>{selectedPost.content}</Typography>
+                        <Typography variant="body1" sx={{ mt: 2 }}>
+                            {selectedPost.content}
+                        </Typography>
                         <Divider sx={{ my: 2 }} />
                         <Typography variant="h6">Comments</Typography>
                         {(comments || []).map((comment) => (
                             <Box key={comment._id} mb={1}>
-                                <Typography variant="body2"><strong>{comment.user_id?.first_name || ''} {comment.user_id?.last_name || ''}:</strong> {comment.content}</Typography>
+                                <Typography variant="body2">
+                                    <strong>
+                                        {comment.user_id?.first_name || ''}{' '}
+                                        {comment.user_id?.last_name || ''}:
+                                    </strong>{' '}
+                                    {comment.content}
+                                </Typography>
                             </Box>
                         ))}
                         <TextField
@@ -135,10 +159,19 @@ const FeedPage = () => {
                             onChange={(e) => setNewComment(e.target.value)}
                             sx={{ mt: 2 }}
                         />
-                        <Button variant="contained" color="primary" onClick={handleCreateComment} sx={{ mt: 2 }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleCreateComment}
+                            sx={{ mt: 2 }}
+                        >
                             Submit Comment
                         </Button>
-                        <Button variant="outlined" onClick={() => setSelectedPost(null)} sx={{ mt: 2, ml: 2 }}>
+                        <Button
+                            variant="outlined"
+                            onClick={() => setSelectedPost(null)}
+                            sx={{ mt: 2, ml: 2 }}
+                        >
                             Back
                         </Button>
                     </CardContent>
@@ -149,15 +182,29 @@ const FeedPage = () => {
                         <Card key={post._id} sx={{ mb: 3 }}>
                             <CardContent>
                                 <Box display="flex" alignItems="center" mb={2}>
-                                    <Avatar alt={`${post.user_id?.first_name || ''} ${post.user_id?.last_name || ''}`} />
+                                    <Avatar
+                                        alt={`${post.user_id?.first_name || ''} ${post.user_id?.last_name || ''}`}
+                                    />
                                     <Box ml={2}>
-                                        <Typography variant="h6">{post.user_id?.first_name || ''} {post.user_id?.last_name || ''}</Typography>
-                                        <Typography variant="body2" color="textSecondary">{post.user_id?.position || ''}</Typography>
+                                        <Typography variant="h6">
+                                            {post.user_id?.first_name || ''}{' '}
+                                            {post.user_id?.last_name || ''}
+                                        </Typography>
+                                        <Typography variant="body2" color="textSecondary">
+                                            {post.user_id?.position || ''}
+                                        </Typography>
                                     </Box>
                                 </Box>
                                 <Typography variant="h5">{post.title}</Typography>
-                                <Typography variant="body1" sx={{ mt: 2 }}>{post.content}</Typography>
-                                <Button variant="contained" color="primary" onClick={() => handleSelectPost(post._id)} sx={{ mt: 2 }}>
+                                <Typography variant="body1" sx={{ mt: 2 }}>
+                                    {post.content}
+                                </Typography>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => handleSelectPost(post._id)}
+                                    sx={{ mt: 2 }}
+                                >
                                     Add Comment
                                 </Button>
                             </CardContent>

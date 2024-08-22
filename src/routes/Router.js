@@ -8,10 +8,8 @@ import Register from 'src/views/auth/Register';
 import ForgotPassword from 'src/views/auth/AuthForgotPassword';
 import Feed from 'src/views/apps/feed/Feed';
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
-
 const Chats = Loadable(lazy(() => import('../views/apps/chat/Chat')));
 const Contacts = Loadable(lazy(() => import('../views/apps/contacts/Contacts')));
-
 const Router = [
 
   {
