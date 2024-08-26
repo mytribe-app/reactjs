@@ -24,6 +24,19 @@ const Router = [
 
     ],
   },
+
+  {
+    path: '/',
+    element: <FullLayout />,
+    children: [
+      { path: '/', element: <Navigate to="/landingpage" /> },
+      { path: '/', element: <Navigate to="/apps/chats" /> },
+      { path: '/apps/chats', element: <Chats /> },
+      { path: '/apps/contacts', element: <Contacts /> },
+      { path: '/apps/feed', element: <Feed /> },
+
+    ],
+  },
   {
     path: '/',
     element: <BlankLayout />,

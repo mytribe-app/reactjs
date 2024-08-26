@@ -14,7 +14,14 @@ import {
   TextField,
   Button,
 } from '@mui/material';
-import { getUserById, getUsers, createContact, getAllContacts } from 'src/services/api';
+import {
+  getUserById,
+  getUsers,
+  createContact,
+  getAllContacts,
+  fetchUsers,
+  fetchAllContacts,
+} from 'src/services/api';
 import { AuthContext } from 'src/context/AuthContext';
 
 const ChatPage = () => {
@@ -29,20 +36,22 @@ const ChatPage = () => {
 
   useEffect(() => {
     const fetchUsersAndMessages = async () => {
-      if (!token || !sessionUserId) {
-        console.error('No token or session user ID available');
-        return;
-      }
-
       try {
-        const sessionUserResponse = await getUserById(sessionUserId, token);
-        setSessionUser(sessionUserResponse?.data);
-        const allUsers = await getUsers(token);
-        setUsers(allUsers.data);
+        if (token && sessionUserId) {
+          const sessionUserResponse = await getUserById(sessionUserId, token);
+          setSessionUser(sessionUserResponse?.data);
+          const allUsers = await getUsers(token);
+          setUsers(allUsers.data);
 
-        // Fetch all messages (reasons)
-        const contacts = await getAllContacts(token);
-        setReasonsList(contacts.data);
+          const contacts = await getAllContacts(token);
+          setReasonsList(contacts.data);
+        } else {
+          const allUsers = await fetchUsers();
+          setUsers(allUsers.data);
+
+          const contacts = await fetchAllContacts();
+          setReasonsList(contacts.data);
+        }
       } catch (error) {
         console.error('Error fetching users or messages:', error);
       }
@@ -51,8 +60,17 @@ const ChatPage = () => {
     fetchUsersAndMessages();
   }, [token, sessionUserId]);
 
-  const handleUserSelect = (user) => {
+  const handleUserSelect = async (user) => {
     setSelectedUser(user);
+
+    if (!token) {
+      try {
+        const userContactDetails = await fetchContactById(user._id);
+        setSessionUser(userContactDetails?.data);
+      } catch (error) {
+        console.error('Error fetching selected user contact details:', error);
+      }
+    }
   };
 
   const handleReasonSubmit = async () => {
@@ -65,8 +83,12 @@ const ChatPage = () => {
     };
 
     try {
-      const response = await createContact(contactData, token);
-      setReasonsList([...reasonsList, response.data]);
+      if (token) {
+        const response = await createContact(contactData, token);
+        setReasonsList([...reasonsList, response.data]);
+      } else {
+        // Here you might need to implement an alternate submission process for when no token is present
+      }
       setReason(''); // Clear the input field
     } catch (error) {
       console.error('Error creating contact:', error);

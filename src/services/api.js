@@ -111,3 +111,37 @@ export const getCommentsByPostId = (postId) => {
         withCredentials: true, // Include credentials if needed
     });
 };
+
+export const fetchUsers = () => {
+    return axios.get(`${API_URL}/users`);
+};
+
+// Fetch a single user by ID
+export const fetchUserById = (id) => {
+    return axios.get(`${API_URL}/users/${id}`);
+};
+
+// Fetch all posts
+export const fetchAllPosts = () => {
+    return axios.get(`${API_URL}/posts`);
+};
+
+// Fetch a single post by ID
+export const fetchPostById = (id) => {
+    return axios.get(`${API_URL}/posts/${id}`);
+};
+
+// Fetch all contacts
+export const fetchAllContacts = () => {
+    return axios.get(`${API_URL}/contacts`);
+};
+
+// Fetch a single contact by ID
+export const fetchContactById = (id) => {
+    return axios.get(`${API_URL}/contacts/${id}`);
+};
+
+// Fetch comments for a specific post by post ID
+export const fetchCommentsByPostId = (postId) => {
+    return axios.get(`${API_URL}/comments/${postId}`);
+};

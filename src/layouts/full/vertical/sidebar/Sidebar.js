@@ -37,7 +37,6 @@ const Sidebar = () => {
           }),
         }}
       >
-
         <Drawer
           anchor="left"
           open
@@ -67,13 +66,9 @@ const Sidebar = () => {
               height: '100%',
             }}
           >
-
-
             <Scrollbar sx={{ height: 'calc(100% - 190px)' }}>
-
               <SidebarItems />
             </Scrollbar>
-            <Profile />
           </Box>
         </Drawer>
       </Box>

@@ -12,7 +12,7 @@ import {
   CardContent,
   Divider,
 } from '@mui/material';
-import { getUsers } from 'src/services/api';
+import { getUsers, fetchUsers } from 'src/services/api';
 import { AuthContext } from 'src/context/AuthContext';
 
 const Contacts = () => {
@@ -21,14 +21,16 @@ const Contacts = () => {
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      if (!token) {
-        console.error('No token available');
-        return;
-      }
-
+    const fetchUsersData = async () => {
       try {
-        const allUser = await getUsers(token);
+        let allUser;
+        if (token) {
+          // If a token is present, fetch users with token
+          allUser = await getUsers(token);
+        } else {
+          // If no token is present, fetch users without token
+          allUser = await fetchUsers();
+        }
         setUsers(allUser.data);
         setSelectedUser(allUser.data[0]); // Automatically select the first user
       } catch (error) {
@@ -36,7 +38,7 @@ const Contacts = () => {
       }
     };
 
-    fetchUsers();
+    fetchUsersData();
   }, [token]);
 
   const handleUserSelect = (user) => {
@@ -63,11 +65,15 @@ const Contacts = () => {
                 sx={{ borderRadius: '5px', mb: 2, px: 2 }}
               >
                 <ListItemAvatar>
-                  <Avatar alt={`${user.first_name} ${user.last_name}`}
-                  // src={`data:image/jpeg;base64,${user.profile}`} 
+                  <Avatar
+                    alt={`${user.first_name} ${user.last_name}`}
+                    // src={`data:image/jpeg;base64,${user.profile}`}
                   />
                 </ListItemAvatar>
-                <ListItemText primary={`${user.first_name} ${user.last_name}`} secondary={user.position} />
+                <ListItemText
+                  primary={`${user.first_name} ${user.last_name}`}
+                  secondary={user.position}
+                />
               </ListItem>
             ))}
           </List>
@@ -106,7 +112,6 @@ const Contacts = () => {
                   <strong>Company:</strong> {selectedUser.company}
                 </Typography>
               </Box>
-
             </CardContent>
           ) : (
             <Typography>Select a contact to view details</Typography>
