@@ -95,7 +95,7 @@ export const updatePost = (id, postData) => {
 
 export const deletePost = (id) => {
     return axios.delete(`${API_URL}/posts/${id}`, {
-        withCredentials: true, // Include credentials if needed
+        withCredentials: true, // Include if needed
     });
 };
 

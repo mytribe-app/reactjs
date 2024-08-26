@@ -9,8 +9,17 @@ import {
     CardContent,
     TextField,
     Divider,
+    IconButton,
 } from '@mui/material';
-import { getAllPosts, createPost, createComment, getCommentsByPostId } from 'src/services/api';
+import { Edit, Delete, AddComment } from '@mui/icons-material';
+import {
+    getAllPosts,
+    createPost,
+    createComment,
+    getCommentsByPostId,
+    deletePost,
+    updatePost,
+} from 'src/services/api';
 import { AuthContext } from 'src/context/AuthContext';
 
 const FeedPage = () => {
@@ -20,8 +29,10 @@ const FeedPage = () => {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [isCreatingPost, setIsCreatingPost] = useState(false);
+    const [isEditingPost, setIsEditingPost] = useState(false);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const [editingPostId, setEditingPostId] = useState(null);
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -39,7 +50,7 @@ const FeedPage = () => {
     const handleCreatePost = async () => {
         if (!title.trim() || !content.trim()) return;
 
-        const userId = user?.user?.id || selectedUserId; // Use logged-in user ID or selectedUserId
+        const userId = user?.user?.id || selectedUserId;
         const postData = { title, content, user_id: userId };
 
         try {
@@ -50,6 +61,34 @@ const FeedPage = () => {
             setIsCreatingPost(false);
         } catch (error) {
             console.error('Error creating post:', error);
+        }
+    };
+
+    const handleEditPost = async (postId) => {
+        const postToEdit = posts.find((post) => post._id === postId);
+        if (postToEdit) {
+            setTitle(postToEdit.title);
+            setContent(postToEdit.content);
+            setIsEditingPost(true);
+            setEditingPostId(postId);
+        }
+    };
+
+    const handleUpdatePost = async () => {
+        if (!title.trim() || !content.trim()) return;
+
+        const userId = user?.user?.id || selectedUserId;
+        const postData = { title, content, user_id: userId };
+
+        try {
+            const response = await updatePost(editingPostId, postData, token);
+            setPosts(posts.map((post) => (post._id === editingPostId ? response.data : post)));
+            setTitle('');
+            setContent('');
+            setIsEditingPost(false);
+            setEditingPostId(null);
+        } catch (error) {
+            console.error('Error updating post:', error);
         }
     };
 
@@ -69,7 +108,7 @@ const FeedPage = () => {
     const handleCreateComment = async () => {
         if (!newComment.trim()) return;
 
-        const userId = user?.user?.id || selectedUserId; // Use logged-in user ID or selectedUserId
+        const userId = user?.user?.id || selectedUserId;
         try {
             const commentData = {
                 post_id: selectedPost._id,
@@ -78,9 +117,21 @@ const FeedPage = () => {
             };
             await createComment(commentData, token);
             setNewComment('');
-            handleSelectPost(selectedPost._id); // Refresh the selected post and comments
+            handleSelectPost(selectedPost._id);
         } catch (error) {
             console.error('Error creating comment:', error);
+        }
+    };
+
+    const handleDeletePost = async (postId) => {
+        try {
+            await deletePost(postId);
+            setPosts(posts.filter((post) => post._id !== postId));
+            if (selectedPost && selectedPost._id === postId) {
+                setSelectedPost(null);
+            }
+        } catch (error) {
+            console.error('Error deleting post:', error);
         }
     };
 
@@ -95,6 +146,7 @@ const FeedPage = () => {
 
             {isCreatingPost && (
                 <Box mb={3}>
+                    <Typography variant="h5">Create New Post</Typography>
                     <TextField
                         label="Title"
                         variant="outlined"
@@ -115,6 +167,33 @@ const FeedPage = () => {
                     />
                     <Button variant="contained" onClick={handleCreatePost}>
                         Post
+                    </Button>
+                </Box>
+            )}
+
+            {isEditingPost && (
+                <Box mb={3}>
+                    <Typography variant="h5">Edit Post</Typography>
+                    <TextField
+                        label="Title"
+                        variant="outlined"
+                        fullWidth
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        sx={{ mb: 2 }}
+                    />
+                    <TextField
+                        label="What's on your mind?"
+                        variant="outlined"
+                        fullWidth
+                        multiline
+                        rows={4}
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        sx={{ mb: 2 }}
+                    />
+                    <Button variant="contained" onClick={handleUpdatePost}>
+                        Update Post
                     </Button>
                 </Box>
             )}
@@ -187,7 +266,7 @@ const FeedPage = () => {
                                     <Avatar
                                         alt={`${post.user_id?.first_name || ''} ${post.user_id?.last_name || ''}`}
                                     />
-                                    <Box ml={2}>
+                                    <Box ml={2} flexGrow={1}>
                                         <Typography variant="h6">
                                             {post.user_id?.first_name || ''}{' '}
                                             {post.user_id?.last_name || ''}
@@ -196,19 +275,29 @@ const FeedPage = () => {
                                             {post.user_id?.position || ''}
                                         </Typography>
                                     </Box>
+                                    <IconButton
+                                        color="primary"
+                                        onClick={() => handleSelectPost(post._id)}
+                                    >
+                                        <AddComment />
+                                    </IconButton>
+                                    <IconButton
+                                        color="secondary"
+                                        onClick={() => handleEditPost(post._id)}
+                                    >
+                                        <Edit />
+                                    </IconButton>
+                                    <IconButton
+                                        color="error"
+                                        onClick={() => handleDeletePost(post._id)}
+                                    >
+                                        <Delete />
+                                    </IconButton>
                                 </Box>
                                 <Typography variant="h5">{post.title}</Typography>
                                 <Typography variant="body1" sx={{ mt: 2 }}>
                                     {post.content}
                                 </Typography>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() => handleSelectPost(post._id)}
-                                    sx={{ mt: 2 }}
-                                >
-                                    Add Comment
-                                </Button>
                             </CardContent>
                         </Card>
                     ))}

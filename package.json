@@ -26,6 +26,7 @@
     "formik": "^2.2.9",
     "framer-motion": "^8.5.2",
     "i18next": "^22.0.6",
+    "image-to-base64": "^2.2.0",
     "install": "^0.13.0",
     "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",

@@ -4,9 +4,7 @@ import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleSidebar, toggleMobileSidebar } from 'src/store/customizer/CustomizerSlice';
 import { IconMenu2 } from '@tabler/icons';
-
 import Profile from './Profile';
-
 import Search from './Search';
 import Navigation from './Navigation';
 import MobileRightSidebar from './MobileRightSidebar';

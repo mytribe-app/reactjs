@@ -78,6 +78,7 @@ const Profile = () => {
         sx={{
           ...(anchorEl2 && {
             color: 'primary.main',
+
           }),
         }}
         onClick={handleClick2}

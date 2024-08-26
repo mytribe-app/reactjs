@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,7 +12,6 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { register } from 'src/services/api';
 import { useNavigate } from 'react-router-dom';
-import { encode } from 'base64-arraybuffer'; // Import the package for base64 conversion
 
 const defaultTheme = createTheme();
 
@@ -25,12 +24,10 @@ export default function SignUp() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        // Convert the image to an ArrayBuffer and then to base64
-        const arrayBuffer = reader.result;
-        const base64String = encode(arrayBuffer);
-        setProfileImage(`data:${file.type};base64,${base64String}`);
+        const base64String = reader.result;
+        setProfileImage(base64String); // Directly set the result as the profile image
       };
-      reader.readAsArrayBuffer(file); // Read the file as an ArrayBuffer
+      reader.readAsDataURL(file); // Read the file as a Data URL (base64)
     }
   };
 
@@ -39,7 +36,6 @@ export default function SignUp() {
     const data = new FormData(event.currentTarget);
 
     const formData = {
-
       first_name: data.get('firstName'),
       last_name: data.get('lastName'),
       email: data.get('email'),
@@ -86,7 +82,6 @@ export default function SignUp() {
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-
               <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
@@ -167,19 +162,9 @@ export default function SignUp() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Button
-                  variant="contained"
-                  component="label"
-                  fullWidth
-                  sx={{ mt: 2 }}
-                >
+                <Button variant="contained" component="label" fullWidth sx={{ mt: 2 }}>
                   Upload Profile Image
-                  <input
-                    type="file"
-                    hidden
-                    accept="image/*"
-                    onChange={handleProfileImageChange}
-                  />
+                  <input type="file" hidden accept="image/*" onChange={handleProfileImageChange} />
                 </Button>
                 {profileImage && (
                   <Box mt={2} textAlign="center">
@@ -192,12 +177,7 @@ export default function SignUp() {
                 )}
               </Grid>
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
+            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
               Sign Up
             </Button>
             <Grid container justifyContent="flex-end">
