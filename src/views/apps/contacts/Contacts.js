@@ -51,7 +51,16 @@ const Contacts = () => {
         Contacts
       </Typography>
       <Card sx={{ display: 'flex', flexDirection: 'row', p: 3, boxShadow: 3 }}>
-        <Box sx={{ width: '30%', borderRight: '1px solid #ccc', pr: 3, mr: 3 }}>
+        <Box
+          sx={{
+            width: '30%',
+            borderRight: '1px solid #ccc',
+            pr: 3,
+            mr: 3,
+            height: '500px', // Fixed height for the list container
+            overflowY: 'auto', // Enable vertical scrolling
+          }}
+        >
           <Typography variant="h6" gutterBottom>
             Contact List
           </Typography>

@@ -14,7 +14,7 @@ import { getAllPosts, createPost, createComment, getCommentsByPostId } from 'src
 import { AuthContext } from 'src/context/AuthContext';
 
 const FeedPage = () => {
-    const { user, token } = useContext(AuthContext);
+    const { user, token, selectedUserId } = useContext(AuthContext);
     const [posts, setPosts] = useState([]);
     const [selectedPost, setSelectedPost] = useState(null);
     const [comments, setComments] = useState([]);
@@ -39,7 +39,8 @@ const FeedPage = () => {
     const handleCreatePost = async () => {
         if (!title.trim() || !content.trim()) return;
 
-        const postData = { title, content, user_id: user.user.id };
+        const userId = user?.user?.id || selectedUserId; // Use logged-in user ID or selectedUserId
+        const postData = { title, content, user_id: userId };
 
         try {
             const response = await createPost(postData, token);
@@ -68,11 +69,12 @@ const FeedPage = () => {
     const handleCreateComment = async () => {
         if (!newComment.trim()) return;
 
+        const userId = user?.user?.id || selectedUserId; // Use logged-in user ID or selectedUserId
         try {
             const commentData = {
                 post_id: selectedPost._id,
                 content: newComment,
-                user_id: user.user.id,
+                user_id: userId,
             };
             await createComment(commentData, token);
             setNewComment('');

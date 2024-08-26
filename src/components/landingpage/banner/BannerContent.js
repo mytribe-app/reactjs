@@ -27,8 +27,6 @@ const BannerContent = () => {
           damping: 30,
         }}
       >
-
-
         <Typography
           variant="h1"
           fontWeight={900}
@@ -41,8 +39,6 @@ const BannerContent = () => {
             },
           }}
         >
-
-
           Mytribe
         </Typography>
       </motion.div>
@@ -77,7 +73,7 @@ const BannerContent = () => {
             Explore
           </StyledButton>
 
-          <StyledButton2 variant="outlined" component={NavLink} to="#">
+          <StyledButton2 variant="outlined" component={NavLink} to="/apps/contacts">
             Test Mode
           </StyledButton2>
         </Stack>

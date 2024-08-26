@@ -21,49 +21,51 @@ import {
   getAllContacts,
   fetchUsers,
   fetchAllContacts,
+  fetchContactById,
 } from 'src/services/api';
 import { AuthContext } from 'src/context/AuthContext';
 
 const ChatPage = () => {
   const [usersData, setUsers] = useState([]);
-  const { token, user } = useContext(AuthContext);
+  const { token, user, selectedUserId } = useContext(AuthContext);
   const [sessionUser, setSessionUser] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [reason, setReason] = useState('');
   const [reasonsList, setReasonsList] = useState([]);
+  console.log('sessionUser', sessionUser);
+  const sessionUserId = user?.user?.id || selectedUserId;
+  console.log(sessionUserId);
 
-  const sessionUserId = user?.user?.id;
+  const fetchUsersAndMessages = async () => {
+    try {
+      if (token || sessionUserId) {
+        const sessionUserResponse = await getUserById(sessionUserId);
+        setSessionUser(sessionUserResponse?.data);
+        const allUsers = await getUsers(token);
+        setUsers(allUsers.data);
+
+        const contacts = await getAllContacts(token);
+        setReasonsList(contacts.data);
+      } else {
+        const allUsers = await fetchUsers();
+        setUsers(allUsers.data);
+
+        const contacts = await fetchAllContacts();
+        setReasonsList(contacts.data);
+      }
+    } catch (error) {
+      console.error('Error fetching users or messages:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchUsersAndMessages = async () => {
-      try {
-        if (token && sessionUserId) {
-          const sessionUserResponse = await getUserById(sessionUserId, token);
-          setSessionUser(sessionUserResponse?.data);
-          const allUsers = await getUsers(token);
-          setUsers(allUsers.data);
-
-          const contacts = await getAllContacts(token);
-          setReasonsList(contacts.data);
-        } else {
-          const allUsers = await fetchUsers();
-          setUsers(allUsers.data);
-
-          const contacts = await fetchAllContacts();
-          setReasonsList(contacts.data);
-        }
-      } catch (error) {
-        console.error('Error fetching users or messages:', error);
-      }
-    };
-
     fetchUsersAndMessages();
   }, [token, sessionUserId]);
 
   const handleUserSelect = async (user) => {
     setSelectedUser(user);
 
-    if (!token) {
+    if (!sessionUserId) {
       try {
         const userContactDetails = await fetchContactById(user._id);
         setSessionUser(userContactDetails?.data);
@@ -74,7 +76,12 @@ const ChatPage = () => {
   };
 
   const handleReasonSubmit = async () => {
-    if (!reason.trim() || !selectedUser) return;
+    if (!reason.trim() || !sessionUserId) {
+      console.error('Reason or selected user is missing');
+      console.log('Reason:', reason);
+      console.log('Selected User:', sessionUserId);
+      return;
+    }
 
     const contactData = {
       user_id: sessionUserId,
@@ -82,14 +89,23 @@ const ChatPage = () => {
       reason,
     };
 
+    console.log('Submitting contact data:', contactData);
+
     try {
-      if (token) {
-        const response = await createContact(contactData, token);
-        setReasonsList([...reasonsList, response.data]);
+      let response;
+      if (sessionUserId) {
+        response = await createContact(contactData, token);
+        console.log('Response from server:', response.data);
+
+        // Clear the input field
+        setReason('');
+
+        // Re-fetch the data to update the list
+        fetchUsersAndMessages();
       } else {
-        // Here you might need to implement an alternate submission process for when no token is present
+        console.log('Token is missing, alternative submission not implemented.');
+        // Implement alternative submission logic if necessary
       }
-      setReason(''); // Clear the input field
     } catch (error) {
       console.error('Error creating contact:', error);
     }
